@@ -1,0 +1,98 @@
+<!--
+  Copyright 2015 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="baidu-speech-to-text">
+    <div id="credentials-check" class="form-row">
+        <div class="form-tips">
+            <i class="fa fa-question-circle"></i><b> Please wait: </b> Checking for bound service credentials...
+        </div>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    
+    <div class="form-row">
+        <label for="node-input-cuid"><i class="fa fa-user"></i> CUID </label>
+        <input type="text" id="node-input-cuid" placeholder="CUID">
+    </div>
+
+
+    <div class="form-row">
+        <label for="node-input-apikey"><i class="fa fa-user"></i> API Key</label>
+        <input type="text" id="node-input-apikey" placeholder="APIKey">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-secretkey"><i class="fa fa-user"></i> Secret Key</label>
+        <input type="text" id="node-input-secretkey" placeholder="SecretKey">
+    </div>
+
+    <div class="form-row">
+        <label for="node-input-lang"><i class="fa fa-language"></i> Language</label>
+        <select type="text" id="node-input-lang" style="display: inline-block; width: 70%;">
+            <option value="en">English</option>
+            <option value="zh">Mandarin Chinese</option>
+        </select>
+    </div>
+ </script>
+
+<script type="text/x-red" data-help-name="baidu-speech-to-text">
+    <p>The Speech To Text converts the human voice into the written word. This service uses machine intelligence to
+    combine information about grammar and language structure with knowledge of the composition of the audio signal to
+    generate a more accurate transcription</p>
+    <p>The audio file to be analysed should be passed in on <code>msg.payload</code>.</p>
+    <p>Supported <code>msg.payload</code> types:</b>.</p>
+    <ul>
+        <li><b>String</b> URL to audio</li>
+        <li><b>Buffer</b> Raw Audio Bytes</li>
+    </ul>
+    <p>Audio must be a <b>WAV encoded file</b>.</p>
+    <p>Speech To Text supports decoding speech from three languages: <b>English and Mandarin Chinese</b>. This option can be modified in the configuration panel.</p>
+    <p>The source sampling rate must be <b>8Khz</b> and with <b>single</b> channel. 
+    <p>The returned audio transcription will be returned on <code>msg.transcription</code>.</p>
+    <p>For more information about the Speech To Text service, read the <a href="http://yuyin.baidu.com/docs/asr">documentation</a>.</p>
+</script>
+
+<script type="text/javascript">
+    (function() {
+        RED.nodes.registerType('baidu-speech-to-text', {
+            category: 'ICT IoT',
+            defaults: {
+                name: {value: ""},
+                lang: {value: "zh"},
+                cuid: {value: "c4:8e:8f:f4:ac:b7"},
+                apikey: {value: "VC2CLCmy1zQqdbBB3wljKLmj"},
+                secretkey: {value: "02c30d2bd9c82ef93ea76bf56f894d70"}
+            },
+            credentials: {
+              username: {type:"text"},
+              password: {type:"password"}
+            },
+            color: "rgb(140, 198, 63)",
+            inputs: 1,
+            outputs: 1,
+            icon: "serial.png",
+            paletteLabel: "speech to text",
+            label: function() {
+                return this.name || "speech to text";
+            },
+            labelStyle: function() {
+                return this.name ? "node_label_italic" : "";
+            },
+        });
+    })();
+</script>
