@@ -49,6 +49,8 @@
             this.highlighted = this.active;
 
             if (this.active) {
+                initAudio();
+
                 if (!audioRecorder) return;
 
                 audioRecorder.clear();

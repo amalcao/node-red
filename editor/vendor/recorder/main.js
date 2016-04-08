@@ -25,6 +25,8 @@ var analyserContext = null;
 var canvasWidth, canvasHeight;
 var recIndex = 0;
 
+var audioContextInit = false;
+
 /* TODO:
 
 - offer mono option
@@ -114,6 +116,10 @@ function gotStream(stream) {
 }
 
 function initAudio() {
+        if (audioContextInit) return;
+
+        audioContextInit = true;
+
         if (!navigator.getUserMedia)
             navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         if (!navigator.cancelAnimationFrame)
@@ -138,4 +144,4 @@ function initAudio() {
         });
 }
 
-window.addEventListener('load', initAudio );
+// window.addEventListener('load', initAudio );
