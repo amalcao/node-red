@@ -32,7 +32,8 @@
         category: 'ICT_IoT',
         color: '#a6bbcf',
         defaults: {
-            name: {value:""}
+            name: {value:""},
+            rate: {value:8000}
         },
         inputs:1,
         outputs:1,
@@ -68,7 +69,7 @@
 
                 audioRecorder.stop();
                 audioRecorder.getBuffers( function(buffers) {
-                    audioRecorder.exportMonoWAV(handleWAV.bind(this));
+                    audioRecorder.exportMonoWAV(handleWAV.bind(this), this.rate);
                 }.bind(this));
             }
           },
@@ -80,6 +81,13 @@
     <div class="form-row">
         <label for="node-input-name"><i class="icon-tag"></i> Name</label>
         <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-rate"> Sample Rate</label>
+        <select type="text" id="node-input-rate" style="display: inline-block; width: 70%;">
+            <option value=8000>8000 Hz</option>
+            <option value=16000>16000 Hz</option>
+        </select>
     </div>
 </script>
 

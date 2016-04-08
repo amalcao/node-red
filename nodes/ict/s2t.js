@@ -50,7 +50,7 @@ module.exports = function (RED) {
       var vop = function(token) {
          var params = {
            format: "wav",
-           rate: 8000,
+           rate: config.rate,
            channel: 1,
            lan: config.lang,
            token: token,

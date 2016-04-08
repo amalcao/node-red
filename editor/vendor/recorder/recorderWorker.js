@@ -34,7 +34,7 @@ this.onmessage = function(e){
       exportWAV(e.data.type);
       break;
     case 'exportMonoWAV':
-      exportMonoWAV(e.data.type);
+      exportMonoWAV(e.data.type, e.data.rate);
       break;
     case 'getBuffers':
       getBuffers();
@@ -65,9 +65,9 @@ function exportWAV(type){
   this.postMessage(audioBlob);
 }
 
-function exportMonoWAV(type){
+function exportMonoWAV(type, rate){
   var bufferL = mergeBuffers(recBuffersL, recLength);
-  var dataview = encodeWAV(bufferL, true);
+  var dataview = encodeWAV(bufferL, true, rate);
   var audioBlob = new Blob([dataview], { type: type });
 
   this.postMessage(audioBlob);
@@ -124,8 +124,8 @@ function writeString(view, offset, string){
   }
 }
 
-function encodeWAV(samples, mono){
-  var sampleRate_ = 8000;
+function encodeWAV(samples, mono, rate){
+  var sampleRate_ = rate || 8000;
   var resampler = new Resampler(sampleRate, sampleRate_, mono ? 1 : 2, samples);
   var resampled = resampler.resampler(samples.length);
 

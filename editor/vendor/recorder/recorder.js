@@ -87,13 +87,14 @@ DEALINGS IN THE SOFTWARE.
       });
     }
 
-    this.exportMonoWAV = function(cb, type){
+    this.exportMonoWAV = function(cb, rate, type){
       currCallback = cb || config.callback;
       type = type || config.type || 'audio/wav';
       if (!currCallback) throw new Error('Callback not set');
       worker.postMessage({
         command: 'exportMonoWAV',
-        type: type
+        type: type,
+        rate: rate,
       });
     }
 
