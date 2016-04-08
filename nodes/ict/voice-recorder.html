@@ -1,4 +1,33 @@
+<!-- <script src="js/lib/recorder.js"></script>
+<script src="js/recordLive.js"></script> -->
 <script type="text/javascript">
+    function handleWAV(blob) {
+        doneEncoding(blob);
+
+        var node = this;
+        var blobToBase64 = function(b, cb) {
+            var reader = new window.FileReader();
+            reader.onload = function(event) {
+              cb(event.target.result);
+            };
+            reader.readAsDataURL(b);
+        };
+
+        blobToBase64(blob, function(dataURL) {
+          var base64 = dataURL.split(',')[1];
+          
+          $.ajax({
+            type: 'POST',
+            url: "voice-record/stop/" + node.id + "/",
+            data: base64,
+            dataType: 'text'
+          }).done(function(data) {
+            console.log(data);
+          });
+
+        });
+    }
+
     RED.nodes.registerType('voice-record',{
         category: 'ICT_IoT',
         color: '#a6bbcf',
@@ -17,14 +46,31 @@
             console.log("on click! " + this.active);
 
             this.highlighted = this.active;
-            $.ajax({
-                url: "voice-record/"+this.id+"/"+(this.active?"enable":"disable"),
-                type: "POST",
-                success: function(resp, textStatus, xhr) {
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                }
-            });
+
+            if (this.active) {
+                if (!audioRecorder) return;
+
+                audioRecorder.clear();
+                audioRecorder.record();
+
+                console.log("Recording ...");
+
+                $.ajax({
+                    url: "voice-record/start/"+this.id+"/",
+                    type: "POST",
+                    success: function(resp, textStatus, xhr) {
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                    }
+                });
+            } else {
+                console.log("Stopped recording.");
+
+                audioRecorder.stop();
+                audioRecorder.getBuffers( function(buffers) {
+                    audioRecorder.exportMonoWAV(handleWAV.bind(this));
+                }.bind(this));
+            }
           },
           toggle: "active",
         }

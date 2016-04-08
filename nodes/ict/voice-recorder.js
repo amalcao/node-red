@@ -1,7 +1,6 @@
 module.exports = function(RED) {
     var child_process = require('child_process');
-    var children = {};
-    var cmd = 'arecord -t wav -f S16_LE -r 8000 -c1 ';
+    var fs = require('fs');
 
     function VoiceRecordNode(config) {
         RED.nodes.createNode(this,config);
@@ -13,36 +12,54 @@ module.exports = function(RED) {
     }
     RED.nodes.registerType("voice-record", VoiceRecordNode);
 
-    RED.httpAdmin.post("/voice-record/:id/:state", RED.auth.needsPermission("debug.write"), function(req, res) {
+    RED.httpAdmin.post("/voice-record/start/:id", RED.auth.needsPermission("debug.write"), 
+      function(req, res) {
         var id = req.params.id;
-        var state = req.params.state;
         var node = RED.nodes.getNode(id);
 
         if (node !== null && typeof node !== "undefined") {
-           var filename = '/tmp/audio-' + id + '.wav';
-           // console.log('filename is ' + filename);
-
-           if (state === "enable") {
-              node.status({fill:"blue", shape:"dot", text:"recording"});
-
-              children[id] = child_process.exec(cmd + filename);
-              children[id].on('exit', function (code, signal) {
-                // node.log('the exit code is ' + code + ' signal ' + signal);
-                var msg = {
-                  'filename' : filename
-                };
-
-                node.send(msg);
-              });
-           } else {
-              node.status({});
-
-              children[id].kill('SIGINT');
-              children[id] = null;
-
-              child_process.exec('aplay ' + filename);
-           }
+            node.status({fill:"blue", shape:"dot", text:"recording"});
         }
         res.sendStatus(200);
+    });
+
+    RED.httpAdmin.post("/voice-record/stop/:id", RED.auth.needsPermission("debug.write"),
+      function(req, res) {
+        var id = req.params.id;
+        var node = RED.nodes.getNode(id);
+
+        if (node != null && typeof node !== "undefined") {
+          node.status({});
+          
+          // console.log(req.body);
+
+          var data = '';
+          for (var x in req.body) {
+            data += x;
+            if (req.body[x] !== undefined && 
+                req.body[x].length > 0) {
+              data += '=';
+              data += req.body[x];
+            }
+          }
+
+          data = data.replace(/\s/g, '+');
+
+          var buf = new Buffer(data, 'base64');
+          var fname = '/tmp/audio-' + id + '.wav';
+          fs.writeFile(fname, buf, function(err) {
+            if (err) {
+              console.log("Error: " + err);
+            } else {
+              res.sendStatus(200);
+
+              // child_process.exec('aplay ' + fname);
+
+              var msg = {};
+              msg.filename = msg.payload = fname;
+              node.send(msg);
+            }
+          });
+        }
     });
 };

@@ -139,7 +139,13 @@ module.exports = function(grunt) {
                         "editor/vendor/marked/marked.min.js",
                         "editor/vendor/orion/built-editor.min.js",
                         "editor/vendor/d3/d3.v3.min.js",
-                        "editor/vendor/i18next/i18next.min.js"
+                        "editor/vendor/i18next/i18next.min.js",
+                        "editor/vendor/recorder/recorder.js",
+                        "editor/vendor/recorder/main.js"
+                    ],
+                    "public/vendor/recorderWorker.js": [
+                        "editor/vendor/recorder/recorderWorker.js",
+                        "editor/vendor/resampler/resampler.js"
                     ],
                     "public/vendor/vendor.css": [
                         "editor/vendor/orion/built-editor.css"
