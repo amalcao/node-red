@@ -2,8 +2,6 @@
 <script src="js/recordLive.js"></script> -->
 <script type="text/javascript">
     function handleWAV(blob) {
-        doneEncoding(blob);
-
         var node = this;
         var blobToBase64 = function(b, cb) {
             var reader = new window.FileReader();
@@ -49,8 +47,6 @@
             this.highlighted = this.active;
 
             if (this.active) {
-                initAudio();
-
                 if (!audioRecorder) return;
 
                 audioRecorder.clear();
